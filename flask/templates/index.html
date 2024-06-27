@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-time Audio Stream</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- <script src=""></script> -->
+</head>
+<body>
+    <h1>Real-time Audio Stream</h1>
+    <div id="graph"></div>
+    <script type="text/javascript">
+        var socket = io();
+        
+        var trace = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            type: 'scatter'
+        };
+        var data = [trace];
+        var layout = {
+            title: 'Real-time Audio Stream',
+            xaxis: {title: 'Time'},
+            yaxis: {title: 'Amplitude'}
+        };
+        Plotly.newPlot('graph', data, layout);
+
+        socket.on('audio_data', function(data) {
+            var currentTime = new Date().getTime();
+            var update = {
+                x: [[currentTime]],
+                y: [data]
+            };
+            Plotly.extendTraces('graph', update, [0]);
+        });
+    </script>
+</body>
+</html>
